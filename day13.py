@@ -30,7 +30,7 @@ for i in points:
         
 print(len(r))
 
-m = ['.'*40 for y in range(10)]
+m = [' '*40 for y in range(10)]
 
 for j in r:
 
