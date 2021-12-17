@@ -9,7 +9,7 @@ Created on Wed Dec 15 09:19:37 2021
 # I'm not used to implementing this sort of algorithms and I spent multiple hours on it. Let's hope that I will be able
 # To di it next time
 
-from numpy import array,concatenate,where
+from numpy import array,concatenate,where,Inf
 
 directions = {'N':(-1,0,'S'),'S':(1,0,'N'),'E':(0,1,'O'),'O':(0,-1,'E')}
 
@@ -39,12 +39,25 @@ BigCave = concatenate((BigLineCave,(BigLineCave+1)%10,(BigLineCave+2)%10,(BigLin
 #             wayRecur(row,col+1,S)
 
 
+
 l = cave
 
-ways = {(1,0,'N'):BigCave[1][0],(0,1,'O'):BigCave[0][1]}
-visited = []
+
+visits = [[False for i in range(len(l[0]))] for j in range(len(l))]
+
+ways = {(1,0):BigCave[1][0],(0,1):BigCave[0][1]}
+visits[0][0] = True
 while True:
+    
     p = min(ways, key=ways.get)
+    n = Inf
+    for i in ways.keys():
+        if not(visits[i[0]][i[1]]) and ways[i] < n:
+            n = ways[i]
+            p = i
+    
+    
+    
     
     row = p[0]
     col = p[1]
@@ -53,28 +66,25 @@ while True:
         print(ways[p])
         break
     
-    d = ['S','E','N','O']
+    d = [(1,0),(0,1),(-1,0),(0,-1)]
     
     if row == 0:
-        d.remove('N')
+        d.remove((-1,0))
         
     if row == len(l) - 1:
-        d.remove('S')
+        d.remove((1,0))
         
     if col == 0:
-        d.remove('O')
+        d.remove((0,-1))
         
     if col == len(l[0]) - 1:
-        d.remove('E')
-        
-    if p[2] in d:
-        d.remove(p[2])
+        d.remove((0,1))
         
     for i in d:
-        nav = directions[i]
-        if (row + nav[0],col+nav[1]) not in visited:
-            ways[(row + nav[0], col + nav[1], nav[2])] = ways[p] + BigCave[row + nav[0]][col + nav[1]]
-            visited.append((row + nav[0],col+nav[1]))
+        if (row + i[0],col+i[1]) not in visits:
+            
+            ways[(row + i[0], col + i[1])] = ways[p] + BigCave[row + i[0]][col + i[1]]
+            visits[row + i[0]][col + i[1]] = True
     del ways[p]
         
         
