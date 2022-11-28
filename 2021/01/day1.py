@@ -4,8 +4,9 @@ Created on Wed Dec  1 10:26:36 2021
 
 @author: Admin
 """
-
-f = open('InputDay1.txt','r')
+from os import path
+ROOTDIR = path.dirname(__file__)
+f = open(path.join(ROOTDIR, 'InputDay1.txt'),'r')
 lines = f.readlines()
 
 
