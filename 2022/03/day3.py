@@ -1,5 +1,4 @@
 import string
-from collections import Counter
 from os import path
 
 string.ascii_lowercase.index('b')
@@ -9,11 +8,13 @@ file = open(path.join(ROOTDIR, 'inputDay3.txt'), 'r')
 
 sacks = [sack.replace('\n', '') for sack in file.readlines()]
 
+
 def get_letter_value(letter: str):
     if letter.isupper():
         return string.ascii_uppercase.index(letter) + 1 + 26
     elif letter.islower():
         return string.ascii_lowercase.index(letter) + 1
+
 
 intersections = (set(sack[:int(len(sack)/2)]).intersection(set(sack[int(len(sack)/2):])) for sack in sacks)
 print(sum(get_letter_value(intersection.pop()) for intersection in intersections))
