@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from enum import Enum, auto
+import time
+from enum import Enum
 from os import path
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
-from scipy.spatial import distance
 import numpy as np
+from scipy.spatial import distance
+
 ROOTDIR = path.dirname(__file__)
 file = open(path.join(ROOTDIR, 'inputDay9.txt'), 'r')
 
@@ -33,7 +35,7 @@ tiles_visited_9: List[Tuple[int, int]] = [(0, 0)]
 tiles_visited_2: List[Tuple[int, int]] = [(0, 0)]
 
 nots: List[Tuple[int, int]] = [(0, 0) for _ in range(10)]
-
+start = time.perf_counter()
 for instruction in instructions:
     direction, number_of_moves = instruction.split(' ')
     direction = Direction[direction]
@@ -44,10 +46,10 @@ for instruction in instructions:
         for not_position in range(1, len(nots)):
             tail_position = move_tail(nots[not_position - 1], nots[not_position])
             nots[not_position] = tail_position
-        if nots[-1] not in tiles_visited_9:
-            tiles_visited_9.append(nots[-1])
-        if nots[1] not in tiles_visited_2:
-            tiles_visited_2.append(nots[1])
+        tiles_visited_9.append(nots[-1])
+        tiles_visited_2.append(nots[1])
 
-print(len(tiles_visited_2))
-print(len(tiles_visited_9))
+print(len(set(tiles_visited_2)))
+print(len(set(tiles_visited_9)))
+
+print(time.perf_counter() - start)
