@@ -38,4 +38,4 @@ root_2 = -time - (delta**0.5)/2
 
 # sums = sum(second * (time - second) > distance for second in range(time))
 
-print(int(root_1 - root_2 + 1))
+print(int(root_1) - int(root_2) + 1)
