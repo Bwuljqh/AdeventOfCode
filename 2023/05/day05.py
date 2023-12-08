@@ -4,7 +4,7 @@ from typing import Tuple
 
 import numpy as np
 
-ITERATIONS = 1
+ITERATIONS = 1000
 
 ROOTDIR = path.dirname(__file__)
 file = open(path.join(ROOTDIR, 'input.txt'), 'r')
@@ -43,8 +43,41 @@ while index < len(almanach):
         index += 1
 
 # Part 2
+
+    def find_intersection(array: Tuple[int, int], filter: Tuple[int, int]):
+        if array[0] >= filter[0] and array[1] <= filter[1]:
+            return array, []
+        if array[0] <= filter[0] and array[1] >= filter[1]:
+            return (filter[0], filter[1]), [None if array[0] == filter[0] else (array[0], filter[0] - 1),
+                                            None if filter[1] == array[1] else (filter[1] + 1, array[1])]
+        if array[1] < filter[0] or filter[1] < array[0]:
+            return None, []
+        if array[1] == filter[0]:
+            return (array[1], filter[0]), [(array[0], array[1] - 1)]
+        if array[0] == filter[1]:
+            return (array[0], filter[1]), [(array[0] + 1, array[1])]
+        if array[0] >= filter[0] and array[1] >= filter[1]:
+            return (array[0], filter[1]), [None if filter[1] == array[1] else (filter[1] + 1, array[1])]
+        if array[0] <= filter[0] and array[1] <= filter[1]:
+            return (filter[0], array[1]), [None if array[0] == filter[0] else (array[0], filter[0] - 1)]
+
+        print(array, filter)
+        print('An unknown configuration appeared')
+
+    # print(find_intersection((2, 7), (6, 10)))  # (6, 7) [(2, 5)]
+    # print(find_intersection((6, 10), (2, 7)))  # (6, 7) [(8, 10)]
+    # print(find_intersection((0, 6), (2, 7)))  # (2, 6) [(0, 1)]
+    # print(find_intersection((0, 3), (0, 5)))  # (0, 3) []
+    # print(find_intersection((0, 2), (1, 2)))  # (1, 2) [(0, 0)]
+    # print(find_intersection((0, 3), (4, 7)))  # None, []
+    # print(find_intersection((0, 3), (3, 7)))  # (3, 3) [(0, 2)]
+    # print(find_intersection((3, 7), (0, 3)))  # (3, 3) [(4, 7)]
+    # print(find_intersection((0, 7), (3, 5)))  # (3, 5) [(0,2), (6, 7)]
+
 time_total = 0
 counter = 0
+
+# Loop to compute average time
 while counter != ITERATIONS:
     new_seeds = [
         (seeds[index * 2], seeds[index * 2 + 1] + seeds[index * 2] - 1)
@@ -65,36 +98,6 @@ while counter != ITERATIONS:
             source = np.int64(source)
             range_len = np.int64(range_len)
             sections[current_section]['item'].append([destination, source, range_len])
-
-    def find_intersection(array: Tuple[int, int], filter: Tuple[int, int]):
-        if array[0] >= filter[0] and array[1] <= filter[1]:
-            return array, []
-        if array[0] <= filter[0] and array[1] >= filter[1]:
-            return (filter[0], filter[1]), [None if array[0] == filter[0] else (array[0], filter[0] - 1),
-                                            None if filter[1] == array[1] else (filter[1] + 1, array[1])]
-        if array[1] < filter[0] or filter[1] < array[0]:
-            return None, []
-        if array[1] == filter[0]:
-            return (array[1], filter[0]), [(array[0], array[1] - 1)]
-        if array[0] == filter[1]:
-            return (array[0], filter[1]), [(array[0] + 1, array[1])]
-        if array[0] >= filter[0] and array[1] >= filter[1]:
-            return (array[0], filter[1]), [None if filter[1] == array[1] else (filter[1] + 1, array[1])]
-        if array[0] <= filter[0] and array[1] <= filter[1]:
-            return (filter[0], array[1]), [None if array[0] == filter[0] else (array[0], filter[0] - 1)]
-
-        print(array, filter)
-        print('I got there')
-
-    # print(find_intersection((2, 7), (6, 10)))  # (6, 7) [(2, 5)]
-    # print(find_intersection((6, 10), (2, 7)))  # (6, 7) [(8, 10)]
-    # print(find_intersection((0, 6), (2, 7)))  # (2, 6) [(0, 1)]
-    # print(find_intersection((0, 3), (0, 5)))  # (0, 3) []
-    # print(find_intersection((0, 2), (1, 2)))  # (1, 2) [(0, 0)]
-    # print(find_intersection((0, 3), (4, 7)))  # None, []
-    # print(find_intersection((0, 3), (3, 7)))  # (3, 3) [(0, 2)]
-    # print(find_intersection((3, 7), (0, 3)))  # (3, 3) [(4, 7)]
-    # print(find_intersection((0, 7), (3, 5)))  # (3, 5) [(0,2), (6, 7)]
 
     start = time.time()
     current_source = new_seeds
@@ -122,8 +125,7 @@ while counter != ITERATIONS:
                     has_intersect = True
                     # print(f'    intersection found between {(seed)} and {(source, source + range_len)} : {intersect}')
                     new_arrays.extend(rest_array for rest_array in rest if rest_array is not None)
-                    # print(
-                    #     f'             adding to destination: {(intersect[0] - source + destination, intersect[1] - source + destination)} from interesect {intersect} and new start {destination}')
+                    # print(f'             adding to destination: {(intersect[0] - source + destination, intersect[1] - source + destination)} from interesect {intersect} and new start {destination}')
                     current_destination.append((intersect[0] - source + destination, intersect[1] - source + destination))
                     break
             if has_intersect:
@@ -132,7 +134,6 @@ while counter != ITERATIONS:
             current_source += new_arrays
             index += 1
         current_source = current_destination + current_source
-
         # current_source = sorted(current_destination + current_source, key=lambda x: x[0])
         # index_source = 0
         # while index_source < len(current_source) - 1:
