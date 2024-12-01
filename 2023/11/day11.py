@@ -61,8 +61,7 @@ for y in range(len(GALAXIES[0])):
     if y not in used_y:
         EXPANSION['col'][y] = EXPANSION_VALUE
 
-total = sum(
-    galaxy_1.find_distance(galaxy_2, EXPANSION)
-    for galaxy_1, galaxy_2 in itertools.combinations(galaxies, 2)
-)
+total = 0
+for galaxy_1, galaxy_2 in itertools.combinations(galaxies, 2):
+    total += galaxy_1.find_distance(galaxy_2, EXPANSION)
 print(total)
