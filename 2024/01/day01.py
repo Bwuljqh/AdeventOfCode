@@ -1,7 +1,5 @@
 
 from os import path
-import math
-from pprint import pprint
 from collections import Counter
 import numpy as np
 import itertools
@@ -14,11 +12,10 @@ file = open(path.join(ROOTDIR, 'input.txt'), 'r')
 
 INPUTS = np.array([stream.replace('\n', '').split() for stream in file.readlines()]).T.astype("int")
 
-print(sum(abs(np.sort(INPUTS[0]) - np.sort(INPUTS[1]))))
-
+print("First start", sum(abs(np.sort(INPUTS[0]) - np.sort(INPUTS[1]))))
 
 left_list = dict(Counter(INPUTS[0]))
 right_list = dict(Counter(INPUTS[1]))
 
 
-print(sum([right_list.get(key, 0)*value*key for key, value in left_list.items()]))
+print("Second star", sum([right_list.get(key, 0)*value*key for key, value in left_list.items()]))
